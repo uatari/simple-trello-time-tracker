@@ -1,16 +1,11 @@
 {
   "name": "Trello Time Tracker",
   "details": "Simple time logging with 15-minute increments",
-  "author": "Your Name",
-  "author_email": "your.email@example.com",
-  "author_url": "https://yourwebsite.com",
-  "capabilities": [
-    "card-badges",
-    "card-buttons"
-  ],
-  "connector_name": "Time Tracker",
-  "base_url": "https://your-server.com",
-  "app_key": "your_app_key_here",
-  "height": 200,
-  "url": "https://your-server.com/power-up.js"
+  "author": "Dimitriy March",
+  "capabilities": ["card-badges", "card-buttons"],
+  "icon": { "url": "https://trello.tingueli.com/icon.png" },
+  "iframe": {
+    "card-badges": { "url": "https://trello.tingueli.com/index.html" },
+    "card-buttons": { "url": "https://trello.tingueli.com/index.html", "height": 60 }
+  }
 }

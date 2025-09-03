@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trello Time Tracker Power-Up</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/trello/1.9.0/trello.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f4f5f7;
+            color: #172b4d;
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(9, 30, 66, 0.15);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #0079bf;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .demo-board {
+            padding: 20px;
+        }
+        
+        .demo-list {
+            background: #ebecf0;
+            border-radius: 3px;
+            padding: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .list-header {
+            font-weight: 600;
+            padding: 8px;
+            margin-bottom: 8px;
+            color: #172b4d;
+        }
+        
+        .demo-card {
+            background: white;
+            border-radius: 3px;
+            padding: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+            position: relative;
+        }
+        
+        .card-title {
+            font-weight: 500;
+            margin-bottom: 8px;
+            padding-right: 80px;
+        }
+        
+        .time-tracker {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .time-display {
+            background: #f4f5f7;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #5e6c84;
+            min-width: 45px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .add-time-btn {
+            background: #0079bf;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .add-time-btn:hover {
+            background: #005a8b;
+        }
+        
+        .card-footer {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f4f5f7;
+            font-size: 11px;
+            color: #5e6c84;
+        }
+        
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px;
+            color: #856404;
+        }
+        
+        .instructions h3 {
+            margin: 0 0 10px 0;
+            color: #856404;
+        }
+        
+        .instructions ul {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+        
+        .code-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px;
+        }
+        
+        .code-section h3 {
+            margin: 0 0 10px 0;
+            color: #495057;
+        }
+        
+        pre {
+            background: #f1f3f4;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="header">
+            <h1>⏱️ Trello Time Tracker Power-Up</h1>
+            <p>Log time in 15-minute increments with a simple +15m button</p>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 How to Use</h3>
+            <ul>
+                <li>Click the <strong>+15m</strong> button to add 15 minutes to any card</li>
+                <li>Time is displayed as <strong>MM:SS</strong> format next to hours in parentheses</li>
+                <li>Each click adds exactly 0.25 hours (15 minutes)</li>
+                <li>Time data is stored in card descriptions (works with real Trello)</li>
+            </ul>
+        </div>
+        
+        <div class="demo-board">
+            <div class="demo-list">
+                <div class="list-header">📋 To Do</div>
+                <div class="demo-card">
+                    <div class="card-title">Review project requirements</div>
+                    <div class="time-tracker">
+                        <div class="time-display" id="time-1">00:00</div>
+                        <button class="add-time-btn" onclick="addTime(1)">+15m</button>
+                    </div>
+                    <div class="card-footer">Click +15m to start tracking time</div>
+                </div>
+                
+                <div class="demo-card">
+                    <div class="card-title">Design wireframes</div>
+                    <div class="time-tracker">
+                        <div class="time-display" id="time-2">01:30</div>
+                        <button class="add-time-btn" onclick="addTime(2)">+15m</button>
+                    </div>
+                    <div class="card-footer">Total: 1.5h logged</div>
+                </div>
+            </div>
+            
+            <div class="demo-list">
+                <div class="list-header">🚧 In Progress</div>
+                <div class="demo-card">
+                    <div class="card-title">Implement user authentication</div>
+                    <div class="time-tracker">
+                        <div class="time-display" id="time-3">02:45</div>
+                        <button class="add-time-btn" onclick="addTime(3)">+15m</button>
+                    </div>
+                    <div class="card-footer">Total: 2.75h logged</div>
+                </div>
+            </div>
+            
+            <div class="demo-list">
+                <div class="list-header">✅ Done</div>
+                <div class="demo-card">
+                    <div class="card-title">Setup development environment</div>
+                    <div class="time-tracker">
+                        <div class="time-display" id="time-4">04:00</div>
+                        <button class="add-time-btn" onclick="addTime(4)">+15m</button>
+                    </div>
+                    <div class="card-footer">Total: 4.0h logged</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="code-section">
+            <h3>🔧 Power-Up Implementation</h3>
+            <p>Here's the core JavaScript code for the actual Trello Power-Up:</p>
+            <pre><code>// Trello Power-Up JavaScript (power-up.js)
+TrelloPowerUp.initialize({
+  'card-badges': function(t, options) {
+    return t.card('name', 'desc')
+    .then(function(card) {
+      const timeMatch = card.desc.match(/TIME_LOGGED:(\d+)/);
+      const minutes = timeMatch ? parseInt(timeMatch[1]) : 0;
+      
+      if (minutes > 0) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        const timeStr = hours.toString().padStart(2, '0') + ':' + 
+                       mins.toString().padStart(2, '0');
+        const hoursDecimal = (minutes / 60).toFixed(2);
+        
+        return [{
+          text: timeStr + ' (' + hoursDecimal + 'h)',
+          color: 'blue'
+        }];
+      }
+      return [];
+    });
+  },
+  
+  'card-buttons': function(t, options) {
+    return [{
+      text: '+15m',
+      callback: function(t) {
+        return t.card('desc')
+        .then(function(card) {
+          const currentDesc = card.desc || '';
+          const timeMatch = currentDesc.match(/TIME_LOGGED:(\d+)/);
+          const currentMinutes = timeMatch ? parseInt(timeMatch[1]) : 0;
+          const newMinutes = currentMinutes + 15;
+          
+          let newDesc;
+          if (timeMatch) {
+            newDesc = currentDesc.replace(/TIME_LOGGED:\d+/, 
+                     'TIME_LOGGED:' + newMinutes);
+          } else {
+            newDesc = currentDesc + '\n\nTIME_LOGGED:' + newMinutes;
+          }
+          
+          return t.card('desc', newDesc);
+        });
+      }
+    }];
+  }
+});</code></pre>
+            
+            <p><strong>manifest.json:</strong></p>
+            <pre><code>{
+  "name": "Time Tracker",
+  "details": "Simple time logging with 15-minute increments",
+  "author": "Your Name",
+  "author_email": "your.email@example.com",
+  "author_url": "https://yourwebsite.com",
+  "capabilities": [
+    "card-badges",
+    "card-buttons"
+  ],
+  "connector_name": "Time Tracker",
+  "base_url": "https://your-server.com",
+  "app_key": "your_app_key_here",
+  "height": 200,
+  "url": "https://your-server.com/power-up.js"
+}</code></pre>
+        </div>
+    </div>
+
+    <script>
+        // Demo functionality - simulates the Power-Up behavior
+        let timeData = {
+            1: 0,    // 00:00
+            2: 90,   // 01:30 
+            3: 165,  // 02:45
+            4: 240   // 04:00
+        };
+
+        function formatTime(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return hours.toString().padStart(2, '0') + ':' + 
+                   mins.toString().padStart(2, '0');
+        }
+
+        function addTime(cardId) {
+            timeData[cardId] += 15;
+            updateDisplay(cardId);
+            
+            // Show feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✓';
+            btn.style.background = '#61bd4f';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '#0079bf';
+            }, 500);
+        }
+
+        function updateDisplay(cardId) {
+            const timeDisplay = document.getElementById('time-' + cardId);
+            const minutes = timeData[cardId];
+            timeDisplay.textContent = formatTime(minutes);
+            
+            // Update footer
+            const card = timeDisplay.closest('.demo-card');
+            const footer = card.querySelector('.card-footer');
+            const hours = (minutes / 60).toFixed(2);
+            
+            if (minutes > 0) {
+                footer.textContent = `Total: ${hours}h logged`;
+                footer.style.color = '#61bd4f';
+            } else {
+                footer.textContent = 'Click +15m to start tracking time';
+                footer.style.color = '#5e6c84';
+            }
+        }
+
+        // Initialize displays
+        window.addEventListener('load', function() {
+            Object.keys(timeData).forEach(cardId => {
+                updateDisplay(cardId);
+            });
+        });
+    </script>
+</body>
+</html>
